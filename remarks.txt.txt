@@ -1,0 +1,20 @@
+
+pip install antlr4-python3-runtime
+pip install simpy
+pip install sympy
+
+run method 
+step1: generate a new python code
+  python convert.py "robot.json" "robot0919.py" "HA1"
+
+step2: run the python code file
+  python robot0919.py
+
+params:
+1 JsonFile: input json file name ,default value='robot.json'
+2 OutputFile: output python code file,default Value='GerenateResult.py'
+3 HAName: the name of HA which is expected to be converted,default value= 'HA1'
+4 ModelName:the name of Model which has the converting HA,default value=''
+5 ttol=10**-2,
+6 iterations=1000
+7 TempleteFile:the convert templete code file.default value='CodeTemplete.txt'  

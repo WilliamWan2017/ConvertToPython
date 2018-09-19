@@ -22,7 +22,7 @@ def GetLocations(currentHA):
             iLocation+=1
     return Locations
     
-def convertF(JsonFile='robot.json',HAName='HA1',ModelName='',ttol=10**-2, iterations=1000,TempleteFile='CodeTemplete.txt',OutputFile='GerenateResult.py' ):
+def convertF(JsonFile='robot.json',OutputFile='GerenateResult.py',HAName='HA1',ModelName='',ttol=10**-2, iterations=1000,TempleteFile='CodeTemplete.txt' ):
     with open (JsonFile, 'r') as fh:        
         currentProject=json.load(fh) 
     
@@ -201,7 +201,22 @@ def formatBlock(CurrentBlockName, BlockLines,currentHA,ttol , iterations , Locat
      
     return ''
 if __name__ == "__main__":
-    if (len(sys.argv)>2):
-        convertF(sys.argv[1],sys.argv[2]) 
+    #def convertF(JsonFile='robot.json',OutputFile='GerenateResult.py',HAName='HA1',ModelName='',ttol=10**-2, iterations=1000,TempleteFile='CodeTemplete.txt' ):
+
+    if (len(sys.argv)>7):        
+        convertF(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5],sys.argv[6],sys.argv[7]) 
+    elif (len(sys.argv)>6):        
+        convertF(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5],sys.argv[6] )         
+    elif (len(sys.argv)>5):        
+        convertF(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5] ) 
+        
+    elif (len(sys.argv)>4):        
+        convertF(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4] )         
+    elif (len(sys.argv)>3):        
+        convertF(sys.argv[1],sys.argv[2],sys.argv[3])         
+    elif (len(sys.argv)>2):        
+        convertF(sys.argv[1],sys.argv[2]  )         
+    elif (len(sys.argv)>1):        
+        convertF(sys.argv[1]  ) 
     else:
         convertF( )
