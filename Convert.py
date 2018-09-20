@@ -8,6 +8,7 @@ import FormatParseLatex
 import ConvertFunction
 import sys
 ContinuourVariables=[]
+OrderContinuourVariables=[]
 def GetLocations(currentHA):
     Locations={}
     iLocation=1
@@ -141,6 +142,8 @@ def GetEquations(BlockLines,HA,ttol , iterations ):
                                   "&ttol":ttol,
                                   "&iterations":iterations                                  
                                   } 
+                    if not variableName in OrderContinuourVariables:
+                        OrderContinuourVariables.append(variableName)
                     for strLine in BlockLines:
                         AnalysesLine=strLine.split('$')
                         for i in range(len(AnalysesLine)):
@@ -188,7 +191,7 @@ def formatCode(AnalysesLine,currentHA,Locations):
             else:
                 func=ConvertFunction.switcherInFunction.get(AnalysesLine[i])
                 if func :                
-                    strResult+=func(None,ContinuourVariables,Locations,None)
+                    strResult+=func(None,OrderContinuourVariables,Locations,None)
                   
         else:
             strResult+=AnalysesLine[i]
@@ -197,7 +200,7 @@ def formatBlock(CurrentBlockName, BlockLines,currentHA,ttol , iterations , Locat
     if (CurrentBlockName== "equations"):
         return GetEquations(BlockLines,currentHA,ttol , iterations )
     elif CurrentBlockName=='locationFuction':         
-        return ConvertFunction.GetLocationFunction(BlockLines,currentHA, Locations,ContinuourVariables)
+        return ConvertFunction.GetLocationFunction(BlockLines,currentHA, Locations,OrderContinuourVariables)
      
     return ''
 if __name__ == "__main__":

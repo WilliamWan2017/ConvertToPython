@@ -36,7 +36,7 @@ def $&haname$(env, cstate=0):
         # the edge guard take preference
         $&Block Begin Edge$   
         $&Edge_Guard$
-            print('%7.4f:$&Var_Cont_Format$' % (curr_time,$&Var_ContsList$))  
+            print('%s %7.4f:$&Var_Cont_Format$' % ( '$&locationname$',curr_time,$&Var_ContsList$))  
             $&locationDestName$_FT=True   
             $&locationname$_FT=None                                       
             return $&locationDestIndex$, 0, $&Var_ContsList$, $&locationInitList$, curr_time
@@ -47,7 +47,9 @@ def $&haname$(env, cstate=0):
                 $&Var_Cont$ = $&locationname$_ode_$&Var_Cont$.compute(vals, curr_time-prev_time)
                 $&Block End Var_contiCompute$ 
                 $&locationname$_FT = True
-            print('%7.4f:$&Var_Cont_Format$' % (curr_time,$&Var_ContsList$))
+            #else:
+            $&locationname$_FT = False
+            print('%s %7.4f:$&Var_Cont_Format$' % ( '$&locationname$',curr_time,$&Var_ContsList$))
             #set a Maximum value for delta 
             $&initCheckPoints$ 
             $&Block Begin CheckPoints$

@@ -91,9 +91,12 @@ def formatSympify(strEquation):
     strTmp=strTmp.replace('$',')')    
     if isMustAddSym:
         if "S.sympify" in strTmp:
-            strTmp='S.sympify('+strTmp+')'
+            strTmp='S.sympify('+strTmp+')' 
         else:
-            strTmp='S.sympify(\''+strTmp+'\')'
+            if not "(" in strTmp:
+                strTmp='S.sympify('+strTmp+')'
+            else:
+                strTmp='S.sympify(\''+strTmp+'\')'
     return strTmp
  
 def formatBlockName(strLine):

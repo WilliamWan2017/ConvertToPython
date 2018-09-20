@@ -7,6 +7,8 @@ run method
 step1: generate a new python code
   python convert.py "robot.json" "robot0919.py" "HA1"
 
+  python convert.py "robot_sample.json" "robot0919.py" "HA1"
+
 step2: run the python code file
   python robot0919.py
 
