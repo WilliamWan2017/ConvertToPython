@@ -17,7 +17,7 @@ def $&haname$(env, cstate=0):
     #define location equations
     $&Block Begin equations$    
     $&locationname$_ode_$&variableName$=ODE(env,lvalue= $&equation_Left$,
-                                                  rvalue=$&equation_right$,ttol=$&ttol$,iterations=$&iterations$)
+                                                  rvalue=$&equation_right$,ttol=$&ttol$,iterations=$&iterations$,vtol=$&vtol$)
     $&Block End equations$
   
 
@@ -36,7 +36,8 @@ def $&haname$(env, cstate=0):
         # the edge guard take preference
         $&Block Begin Edge$   
         $&Edge_Guard$
-            print('%s %7.4f:$&Var_Cont_Format$' % ( '$&locationname$',curr_time,$&Var_ContsList$))  
+            $&Reset$
+            print('%s %7.4f:$&Var_Cont_Format$' % ( '$&locationname$-1',curr_time,$&Var_ContsList$))  
             $&locationDestName$_FT=True   
             $&locationname$_FT=None                                       
             return $&locationDestIndex$, 0, $&Var_ContsList$, $&locationInitList$, curr_time
@@ -49,7 +50,7 @@ def $&haname$(env, cstate=0):
                 $&locationname$_FT = True
             #else:
             $&locationname$_FT = False
-            print('%s %7.4f:$&Var_Cont_Format$' % ( '$&locationname$',curr_time,$&Var_ContsList$))
+            print('%s %7.4f:$&Var_Cont_Format$' % ( '$&locationname$-2',curr_time,$&Var_ContsList$))
             #set a Maximum value for delta 
             $&initCheckPoints$ 
             $&Block Begin CheckPoints$
@@ -66,12 +67,15 @@ def $&haname$(env, cstate=0):
             raise RuntimeError('Reached unreachable branch'
                                ' in $&locationname$')
     $&Block End locationFuction$
+    $&Block Begin EndlocationFuction$    
         # Location End is end state in this example.
     def $&locationEndName$($&Var_ContsList$,$&locationInitList$,prev_time):
         global step
         print('total steps: ', step)
         # Done
         sys.exit(1)
+    $&Block End EndlocationFuction$
+    
   # The dictionary for the switch statement.
     switch_case = {
       $&DicLocationName$
@@ -95,8 +99,8 @@ def main():
     env.process($&haname$(env))
     # Run the simulation until all events in the queue are processed.
     # Make it some number to halt simulation after sometime.
-    env.run(until=0.07)
-
+    env.run(until=$&until$)
+    print('total steps: ', step)
 
 if __name__ == '__main__':
     main()

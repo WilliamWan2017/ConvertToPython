@@ -9,9 +9,16 @@ step1: generate a new python code
 
   python convert.py "robot_sample.json" "robot0919.py" "HA1"
 
+
+  python convert.py "nuclear_reactor.json" "nuclear_reactor_new.py" "HA1" "" 10**-3 100 "CodeTemplete.txt" 30 10**-10
+
+
+  python convert.py "thermostat.json" "thermostat_new.py" "HA1" "" 10**-3 100 "CodeTemplete.txt" 0.5 0
+
 step2: run the python code file
   python robot0919.py
-
+  python nuclear_reactor_new.py
+  python thermostat_new.py
 params:
 1 JsonFile: input json file name ,default value='robot.json'
 2 OutputFile: output python code file,default Value='GerenateResult.py'
@@ -20,3 +27,7 @@ params:
 5 ttol=10**-2,
 6 iterations=1000
 7 TempleteFile:the convert templete code file.default value='CodeTemplete.txt'  
+8 until default value=0.07
+9 vtol=0
+ 
+

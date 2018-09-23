@@ -1,4 +1,4 @@
- #!/usr/bin/env python3
+#!/usr/bin/env python3
 
 import simpy
 import sympy as S
@@ -12,6 +12,7 @@ def ha(env, cstate=0):
     """This is the ha itself. This is very similar to the 'C' code that we
     generate from the haskell model, except that the whole thing is
     event drive.
+
     """
     delta = None               # None to cause failure
 
@@ -147,4 +148,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main() 
+    main()
