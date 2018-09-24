@@ -31,7 +31,7 @@ def ha(env, cstate=0):
         curr_time = env.now
         # The edge guard takes preference
         if x <= 18.5:
-            print('%7.7f: %7.7f' % (curr_time, x))
+            print('%s %7.7f: %7.7f' % ('loc1-1',curr_time, x))
             return 1, 0, x, None, True, curr_time
         # The invariant
         elif x >= 18.5:
@@ -41,7 +41,7 @@ def ha(env, cstate=0):
                 x = loc1_xode.compute({S.sympify('x(t)'): x},
                                       curr_time-prev_time)
                 loc1_FT = True
-            print('%7.7f: %7.7f' % (curr_time, x))
+            print('%s %7.7f: %7.7f' % ('loc1-2',curr_time, x))
 
             if abs(x-18.5) > loc1_xode.vtol:
                 x_delta = loc1_xode.delta({S.sympify('x(t)'): x},
@@ -59,13 +59,13 @@ def ha(env, cstate=0):
     def location2(x, loc1_FT, loc2_FT, prev_time):
         curr_time = env.now
         if x >= 19.5:
-            print('%7.7f: %7.7f' % (curr_time, x))
+            print('%s %7.7f: %7.7f' % ('loc2-1',curr_time, x))
             return 0, 0, x, True, None, curr_time
         elif x <= 19.5:
             if not loc2_FT:
                 x = loc2_xode.compute({S.sympify('x(t)'): x},
                                       curr_time-prev_time)
-            print('%7.7f: %7.7f' % (curr_time, x))
+            print('%s %7.7f: %7.7f' % ('loc2-2',curr_time, x))
 
             if abs(x-19.5) > loc2_xode.vtol:
                 x_delta = loc2_xode.delta({S.sympify('x(t)'): x},

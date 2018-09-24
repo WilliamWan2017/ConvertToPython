@@ -104,16 +104,17 @@ def GetVar_Conts(AnalysesLine,HA,Locations,Ext=[]):
 def GetLocation_Init(AnalysesLine,HA,Locations,Ext=[]):
     strResult=''     
     for iLocation in Locations.keys():
-        for i in range(len(AnalysesLine)):
-            if ('&' in AnalysesLine[i]):      
-                strResult+=Locations[iLocation]['boxName']+'_FT=False'# +str(Locations[iLocation]["isInitial"]  )
-            else:
-                strResult+=AnalysesLine[i]
+        if Locations[iLocation]['boxName']:
+            for i in range(len(AnalysesLine)):
+                if ('&' in AnalysesLine[i]):      
+                    strResult+=Locations[iLocation]['boxName']+'_FT=False'# +str(Locations[iLocation]["isInitial"]  )
+                else:
+                    strResult+=AnalysesLine[i]
     return strResult
 def GetDicLocationName(AnalysesLine,HA,Locations,Ext=[]):
     strResult='' 
     listResult=[]
-    for ik in Locations.keys():
+    for ik in sorted(Locations.keys()):
         if Locations[ik]['boxName']:
             for i in range(len(AnalysesLine)):
                 if ('&' in AnalysesLine[i]):      

@@ -20,7 +20,7 @@ def GetVar_ContsList(location,ContinuourVariables,locations,Edge,Ext=[]):
     return ','.join(ContinuourVariables)
 
 def GetLocationInitList(location,ContinuourVariables,locations,Edge,Ext=[]):
-    LocationNames=[location1["boxName"] for location1 in locations.values()]
+    LocationNames=[location1["boxName"] for location1 in locations.values() if location1["boxName"] ]
     return '_FT,'.join(LocationNames)+"_FT"
 
 def Getconvert_continuous_variable_to_simpy(location,ContinuourVariables,locations,Edge,Ext=[]):

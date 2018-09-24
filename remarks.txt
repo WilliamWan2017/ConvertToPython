@@ -14,11 +14,19 @@ step1: generate a new python code
 
 
   python convert.py "thermostat.json" "thermostat_new.py" "HA1" "" 10**-3 100 "CodeTemplete.txt" 0.5 0
+ 
+ python convert.py "waterMonitorAlurLHA.json" "waterMonitorAlurLHA_new.py" "HA1" "" 10**-3 100 "CodeTemplete.txt" 30 0
+
+
 
 step2: run the python code file
   python robot0919.py
   python nuclear_reactor_new.py
   python thermostat_new.py
+  python waterMonitorAlurLHA_new.py
+  
+  
+  
 params:
 1 JsonFile: input json file name ,default value='robot.json'
 2 OutputFile: output python code file,default Value='GerenateResult.py'
