@@ -59,6 +59,11 @@ def formatVariableName(strEquation):
 def formatContinuourVariable(strEquation,Variables):
     #p=standardre.compile(r'(\()(x|y|t|pt)(\))')
     #strParttern=
+    p=standardre.compile(r'(^|[^a-zA-Z0-9])('+'|'.join(Variables)+r')($|[^a-zA-Z0-9])')
+    return p.sub(r'\1\2(t)\3',strEquation)
+def formatContinuourVariable_old(strEquation,Variables):
+    #p=standardre.compile(r'(\()(x|y|t|pt)(\))')
+    #strParttern=
     p=standardre.compile(r'(\()('+'|'.join(Variables)+r')(\))')
     return p.sub(r'\1\2(t)\3',strEquation)
 
@@ -71,6 +76,21 @@ def getContinuousVariable(strEquation,Variables):
         return ''; 
     
 def formatSympify(strEquation):
+    
+    
+    p=standardre.compile(r'^([0-9.]+)$')
+    if (p.match(strEquation)):   
+        return 'S.sympify(\''+strEquation+'\')'    
+    p=standardre.compile(r'^([a-zA-Z0-9]+)$')
+    if (p.match(strEquation)):   
+        return 'S.sympify('+strEquation+')'
+    p=standardre.compile(r'^([\(\)a-zA-Z0-9]+)$')
+    if (p.match(strEquation)):   
+        return 'S.sympify(\''+strEquation+'\')'   
+    else: 
+        return 'S.sympify('+strEquation+')'
+
+def formatSympify_old(strEquation):
     isMustAddSym=False
     p=standardre.compile(r'(\()([^()]*)(\))')
     p2=standardre.compile(r'([\w]*)(\()([^()]*)(\))')
