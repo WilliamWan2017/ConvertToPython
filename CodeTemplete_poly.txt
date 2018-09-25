@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+
+import simpy
+import sympy as S
+import sys
+from src.ode import ODE
+
+step = 0
+def $&haname$(env, cstate=0):
+
+    delta = None               # None to cause failure
+    #define constants
+    $&constants$
+    #define continuous variables used in this ha
+    $&Var_Conts$
+
+    #define location equations
+    $&Block Begin equations$    
+    $&locationname$_ode_$&variableName$=ODE(env,lvalue= $&equation_Left$,
+                                                  rvalue=$&equation_right$,ttol=$&ttol$,iterations=$&iterations$,vtol=$&vtol$, simplify_poly=True)
+    $&Block End equations$
+  
+
+    #define location init value
+    $&location_Init$
+
+    #define location function
+    $&Block Begin locationFuction$ 
+    
+    
+    # The computations in $&locationname$
+    # Returning state, delta, value, loc1_FT, loc2_FT
+    def $&locationname$($&Var_ContsList$,$&locationInitList$,prev_time):
+        curr_time=env.now
+        vals={$&convert_continuous_variable_to_simpy$}
+        # the edge guard take preference
+        $&Block Begin Edge$   
+        $&Edge_Guard$
+            $&Reset$
+            print('%s %7.4f:$&Var_Cont_Format$' % ( '$&locationname$-1',curr_time,$&Var_ContsList$))  
+            $&locationDestName$_FT=True   
+            $&locationname$_FT=None                                       
+            return $&locationDestIndex$, 0, $&Var_ContsList$, $&locationInitList$, curr_time
+        $&Block End Edge$
+        elif $&Invariant$:
+            if not $&locationname$_FT:
+                $&Block Begin Var_contiCompute$
+                $&Var_Cont$ = $&locationname$_ode_$&Var_Cont$.compute(vals, curr_time-prev_time)
+                $&Block End Var_contiCompute$ 
+                $&locationname$_FT = True
+            #else:
+            $&locationname$_FT = False
+            print('%s %7.4f:$&Var_Cont_Format$' % ( '$&locationname$-2',curr_time,$&Var_ContsList$))
+            #set a Maximum value for delta 
+            $&initCheckPoints$ 
+            $&Block Begin CheckPoints$
+            if abs($&VariableName$- $&CheckPointValue$) > $&locationname$_ode_$&VariableName$.vtol:
+                $&Delat_Variable$= min( $&locationname$_ode_$&VariableName$.delta(vals, quanta=( $&CheckPointValue$- $&VariableName$),
+                                      other_odes=[$&Other_odes$]),d$&VariableName$ )
+            else:
+                $&VariableName$=  $&CheckPointValue$
+                $&Delat_Variable$= 0
+            $&Block End CheckPoints$
+            Return_Delta=min(99999,$&Delat_VariableList$)
+            return $&CurrentlocationIndex$, Return_Delta, $&Var_ContsList$, $&locationInitList$, curr_time
+        else:
+            raise RuntimeError('Reached unreachable branch'
+                               ' in $&locationname$')
+    $&Block End locationFuction$
+    $&Block Begin EndlocationFuction$    
+        # Location End is end state in this example.
+    def $&locationEndName$($&Var_ContsList$,$&locationInitList$,prev_time):
+        global step
+        print('total steps: ', step)
+        # Done
+        sys.exit(1)
+    $&Block End EndlocationFuction$
+    
+  # The dictionary for the switch statement.
+    switch_case = {
+      $&DicLocationName$
+    }
+    prev_time = env.now
+    while(True):
+        (cstate, delta, $&Var_ContsList$,$&locationInitList$, prev_time) = switch_case[cstate]($&Var_ContsList$,$&locationInitList$,
+                                                            prev_time)
+        # This should always be the final statement in this function
+        global step
+        step += 1
+        yield env.timeout(delta)
+
+
+def main():
+    """
+    """
+    # Need this for this example.
+    sys.setrecursionlimit(2000)
+    env = simpy.Environment()
+    env.process($&haname$(env))
+    # Run the simulation until all events in the queue are processed.
+    # Make it some number to halt simulation after sometime.
+    env.run(until=$&until$)
+    print('total steps: ', step)
+
+if __name__ == '__main__':
+    main()
+
+
+
+
+   

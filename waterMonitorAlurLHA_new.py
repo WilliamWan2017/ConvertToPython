@@ -16,21 +16,21 @@ def NoName(env, cstate=0):
 
     #define location equations
     Loc0_ode_x=ODE(env,lvalue= S.sympify('diff(x(t))'),
-                                                  rvalue=S.sympify(1.00000000000000),ttol=10**-3,iterations=100,vtol=0)
+                                                  rvalue=S.sympify('1.00000000000000'),ttol=10**-3,iterations=100,vtol=0)
     Loc0_ode_y=ODE(env,lvalue= S.sympify('diff(y(t))'),
-                                                  rvalue=S.sympify(1.00000000000000),ttol=10**-3,iterations=100,vtol=0)
+                                                  rvalue=S.sympify('1.00000000000000'),ttol=10**-3,iterations=100,vtol=0)
     Loc1_ode_x=ODE(env,lvalue= S.sympify('diff(x(t))'),
-                                                  rvalue=S.sympify(1.00000000000000),ttol=10**-3,iterations=100,vtol=0)
+                                                  rvalue=S.sympify('1.00000000000000'),ttol=10**-3,iterations=100,vtol=0)
     Loc1_ode_y=ODE(env,lvalue= S.sympify('diff(y(t))'),
-                                                  rvalue=S.sympify(1.00000000000000),ttol=10**-3,iterations=100,vtol=0)
+                                                  rvalue=S.sympify('1.00000000000000'),ttol=10**-3,iterations=100,vtol=0)
     Loc2_ode_x=ODE(env,lvalue= S.sympify('diff(x(t))'),
-                                                  rvalue=S.sympify(1.00000000000000),ttol=10**-3,iterations=100,vtol=0)
+                                                  rvalue=S.sympify('1.00000000000000'),ttol=10**-3,iterations=100,vtol=0)
     Loc2_ode_y=ODE(env,lvalue= S.sympify('diff(y(t))'),
-                                                  rvalue=S.sympify(1.00000000000000),ttol=10**-3,iterations=100,vtol=0)
+                                                  rvalue=S.sympify('1.00000000000000'),ttol=10**-3,iterations=100,vtol=0)
     Loc3_ode_x=ODE(env,lvalue= S.sympify('diff(x(t))'),
-                                                  rvalue=S.sympify(1.00000000000000),ttol=10**-3,iterations=100,vtol=0)
+                                                  rvalue=S.sympify('1.00000000000000'),ttol=10**-3,iterations=100,vtol=0)
     Loc3_ode_y=ODE(env,lvalue= S.sympify('diff(y(t))'),
-                                                  rvalue=S.sympify(1.00000000000000),ttol=10**-3,iterations=100,vtol=0)
+                                                  rvalue=S.sympify('1.00000000000000'),ttol=10**-3,iterations=100,vtol=0)
   
 
     #define location init value

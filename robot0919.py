@@ -10,162 +10,82 @@ def NoName(env, cstate=0):
 
     delta = None               # None to cause failure
     #define constants
-    v1=-1.3
-    vr=10.5
-    thM=20
-    thm=5
-     T1=10
-    v2=-2.7
-    T2=10
+    le=1
+    v1=30
+    v2=-10
     #define continuous variables used in this ha
-    x=T1
-    theta=11.5
-    y=T2
+    phi=1
+    theta=0
+    x=0
+    y=1
 
     #define location equations
-    Loc2_ode_x=ODE(env,lvalue= S.sympify('diff(x(t))'),
-                                                  rvalue=S.sympify(1.00000000000000),ttol=10**-3,iterations=100)
-    Loc2_ode_y=ODE(env,lvalue= S.sympify('diff(y(t))'),
-                                                  rvalue=S.sympify(1.00000000000000),ttol=10**-3,iterations=100)
-    Loc2_ode_theta=ODE(env,lvalue= S.sympify('diff(theta(t))'),
-                                                  rvalue=S.sympify(v2),ttol=10**-3,iterations=100)
-    Loc0_ode_x=ODE(env,lvalue= S.sympify('diff(x(t))'),
-                                                  rvalue=S.sympify(1.00000000000000),ttol=10**-3,iterations=100)
-    Loc0_ode_y=ODE(env,lvalue= S.sympify('diff(y(t))'),
-                                                  rvalue=S.sympify(1.00000000000000),ttol=10**-3,iterations=100)
-    Loc0_ode_theta=ODE(env,lvalue= S.sympify('diff(theta(t))'),
-                                                  rvalue=S.sympify(vr),ttol=10**-3,iterations=100)
-    Loc1_ode_x=ODE(env,lvalue= S.sympify('diff(x(t))'),
-                                                  rvalue=S.sympify(1.00000000000000),ttol=10**-3,iterations=100)
-    Loc1_ode_y=ODE(env,lvalue= S.sympify('diff(y(t))'),
-                                                  rvalue=S.sympify(1.00000000000000),ttol=10**-3,iterations=100)
-    Loc1_ode_theta=ODE(env,lvalue= S.sympify('diff(theta(t))'),
-                                                  rvalue=S.sympify(v1),ttol=10**-3,iterations=100)
+    L1_ode_x=ODE(env,lvalue= S.sympify('diff(x(t))'),
+                                                  rvalue=S.sympify(v1*S.cos(S.sympify('theta(t)'))),ttol=0.01,iterations=1000,vtol=0)
+    L1_ode_y=ODE(env,lvalue= S.sympify('diff(y(t))'),
+                                                  rvalue=S.sympify(v1*S.sin(S.sympify('theta(t)'))),ttol=0.01,iterations=1000,vtol=0)
+    L1_ode_theta=ODE(env,lvalue= S.sympify('diff(theta(t))'),
+                                                  rvalue=S.sympify(v1*(S.tan(S.sympify('phi(t)'))/le)),ttol=0.01,iterations=1000,vtol=0)
+    L1_ode_phi=ODE(env,lvalue= S.sympify('diff(phi(t))'),
+                                                  rvalue=S.sympify(v2),ttol=0.01,iterations=1000,vtol=0)
   
 
     #define location init value
-    Loc0_FT=True
-    Loc2_FT=False
-    Loc1_FT=False
-    Loc3_FT=False
+    L1_FT=False
+    L2_End_FT=False
 
     #define location function
     
     
-    # The computations in Loc0
+    # The computations in L1
     # Returning state, delta, value, loc1_FT, loc2_FT
-    def Loc0(x,y,theta,Loc0_FT,Loc2_FT,Loc1_FT,Loc3_FT,prev_time):
+    def L1(x,y,theta,phi,L1_FT,L2_End_FT,prev_time):
         curr_time=env.now
-        vals={S.sympify('x(t)'): x,S.sympify('y(t)'): y,S.sympify('theta(t)'): theta}
+        vals={S.sympify('x(t)'): x,S.sympify('y(t)'): y,S.sympify('theta(t)'): theta,S.sympify('phi(t)'): phi}
         # the edge guard take preference
-        if theta == thM and x<T1 and y<T2:
+        if ((y >= 1.8 and x <= 2.8) or (y <= 0.8 and x <= 2.8)):
             
-            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc0',curr_time,x,y,theta))  
-            Loc3_FT=True   
-            Loc0_FT=None                                       
-            return 3, 0, x,y,theta, Loc0_FT,Loc2_FT,Loc1_FT,Loc3_FT, curr_time
-        if theta == thM and x>=T1:
-            
-            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc0',curr_time,x,y,theta))  
-            Loc1_FT=True   
-            Loc0_FT=None                                       
-            return 2, 0, x,y,theta, Loc0_FT,Loc2_FT,Loc1_FT,Loc3_FT, curr_time
-        if theta == thM and Y>=T2:
-            
-            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc0',curr_time,x,y,theta))  
-            Loc2_FT=True   
-            Loc0_FT=None                                       
-            return 1, 0, x,y,theta, Loc0_FT,Loc2_FT,Loc1_FT,Loc3_FT, curr_time
-        elif theta <= thM:
-            if not Loc0_FT:
-                x = Loc0_ode_x.compute(vals, curr_time-prev_time)
-                y = Loc0_ode_y.compute(vals, curr_time-prev_time)
-                theta = Loc0_ode_theta.compute(vals, curr_time-prev_time)
-                Loc0_FT = True
+            print('%s %7.4f:%7.4f:%7.4f:%7.4f:%7.4f' % ( 'L1-1',curr_time,x,y,theta,phi))  
+            L2_End_FT=True   
+            L1_FT=None                                       
+            return 1, 0, x,y,theta,phi, L1_FT,L2_End_FT, curr_time
+        elif not ((y >= 1.8 and x <= 2.8) or (y <= 0.8 and x <= 2.8)):
+            if not L1_FT:
+                x = L1_ode_x.compute(vals, curr_time-prev_time)
+                y = L1_ode_y.compute(vals, curr_time-prev_time)
+                theta = L1_ode_theta.compute(vals, curr_time-prev_time)
+                phi = L1_ode_phi.compute(vals, curr_time-prev_time)
+                L1_FT = True
             #else:
-            Loc0_FT = False
-            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc0',curr_time,x,y,theta))
+            L1_FT = False
+            print('%s %7.4f:%7.4f:%7.4f:%7.4f:%7.4f' % ( 'L1-2',curr_time,x,y,theta,phi))
             #set a Maximum value for delta 
-            dtheta=9999999 
-            if abs(theta- thM) > Loc0_ode_theta.vtol:
-                dtheta= min( Loc0_ode_theta.delta(vals, quanta=( thM- theta),
-                                      other_odes=[Loc0_ode_x,Loc0_ode_y]),dtheta )
+            dx,dy=9999999,9999999 
+            if abs(x- 2.8) > L1_ode_x.vtol:
+                dx= min( L1_ode_x.delta(vals, quanta=( 2.8- x),
+                                      other_odes=[L1_ode_y,L1_ode_theta,L1_ode_phi]),dx )
             else:
-                theta=  thM
-                dtheta= 0
-            Return_Delta=min(99999,dtheta)
-            return 0, Return_Delta, x,y,theta, Loc0_FT,Loc2_FT,Loc1_FT,Loc3_FT, curr_time
-        else:
-            raise RuntimeError('Reached unreachable branch'
-                               ' in Loc0')
-    
-    
-    # The computations in Loc2
-    # Returning state, delta, value, loc1_FT, loc2_FT
-    def Loc2(x,y,theta,Loc0_FT,Loc2_FT,Loc1_FT,Loc3_FT,prev_time):
-        curr_time=env.now
-        vals={S.sympify('x(t)'): x,S.sympify('y(t)'): y,S.sympify('theta(t)'): theta}
-        # the edge guard take preference
-        if th == thm:
-            x=0
-            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc2',curr_time,x,y,theta))  
-            Loc0_FT=True   
-            Loc2_FT=None                                       
-            return 0, 0, x,y,theta, Loc0_FT,Loc2_FT,Loc1_FT,Loc3_FT, curr_time
-        elif theta>=thm:
-            if not Loc2_FT:
-                x = Loc2_ode_x.compute(vals, curr_time-prev_time)
-                y = Loc2_ode_y.compute(vals, curr_time-prev_time)
-                theta = Loc2_ode_theta.compute(vals, curr_time-prev_time)
-                Loc2_FT = True
-            #else:
-            Loc2_FT = False
-            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc2',curr_time,x,y,theta))
-            #set a Maximum value for delta 
-            dtheta=9999999 
-            if abs(theta- thm) > Loc2_ode_theta.vtol:
-                dtheta= min( Loc2_ode_theta.delta(vals, quanta=( thm- theta),
-                                      other_odes=[Loc2_ode_x,Loc2_ode_y]),dtheta )
+                x=  2.8
+                dx= 0
+            if abs(y- 0.8) > L1_ode_y.vtol:
+                dy= min( L1_ode_y.delta(vals, quanta=( 0.8- y),
+                                      other_odes=[L1_ode_x,L1_ode_theta,L1_ode_phi]),dy )
             else:
-                theta=  thm
-                dtheta= 0
-            Return_Delta=min(99999,dtheta)
-            return 1, Return_Delta, x,y,theta, Loc0_FT,Loc2_FT,Loc1_FT,Loc3_FT, curr_time
+                y=  0.8
+                dy= 0
+            if abs(y- 1.8) > L1_ode_y.vtol:
+                dy= min( L1_ode_y.delta(vals, quanta=( 1.8- y),
+                                      other_odes=[L1_ode_x,L1_ode_theta,L1_ode_phi]),dy )
+            else:
+                y=  1.8
+                dy= 0
+            Return_Delta=min(99999,dx,dy)
+            return 0, Return_Delta, x,y,theta,phi, L1_FT,L2_End_FT, curr_time
         else:
             raise RuntimeError('Reached unreachable branch'
-                               ' in Loc2')
-    
-    
-    # The computations in Loc1
-    # Returning state, delta, value, loc1_FT, loc2_FT
-    def Loc1(x,y,theta,Loc0_FT,Loc2_FT,Loc1_FT,Loc3_FT,prev_time):
-        curr_time=env.now
-        vals={S.sympify('x(t)'): x,S.sympify('y(t)'): y,S.sympify('theta(t)'): theta}
-        # the edge guard take preference
-        if theta==thm:
-            x=0
-            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc1',curr_time,x,y,theta))  
-            Loc0_FT=True   
-            Loc1_FT=None                                       
-            return 0, 0, x,y,theta, Loc0_FT,Loc2_FT,Loc1_FT,Loc3_FT, curr_time
-        elif theta>=thm:
-            if not Loc1_FT:
-                x = Loc1_ode_x.compute(vals, curr_time-prev_time)
-                y = Loc1_ode_y.compute(vals, curr_time-prev_time)
-                theta = Loc1_ode_theta.compute(vals, curr_time-prev_time)
-                Loc1_FT = True
-            #else:
-            Loc1_FT = False
-            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc1',curr_time,x,y,theta))
-            #set a Maximum value for delta 
-             
-            Return_Delta=min(99999,0)
-            return 2, Return_Delta, x,y,theta, Loc0_FT,Loc2_FT,Loc1_FT,Loc3_FT, curr_time
-        else:
-            raise RuntimeError('Reached unreachable branch'
-                               ' in Loc1')
+                               ' in L1')
         # Location End is end state in this example.
-    def Loc3(x,y,theta,Loc0_FT,Loc2_FT,Loc1_FT,Loc3_FT,prev_time):
+    def L2_End(x,y,theta,phi,L1_FT,L2_End_FT,prev_time):
         global step
         print('total steps: ', step)
         # Done
@@ -173,14 +93,12 @@ def NoName(env, cstate=0):
     
   # The dictionary for the switch statement.
     switch_case = {
-      0:Loc0,
-      1:Loc2,
-      2:Loc1,
-      3:Loc3
+      0:L1,
+      1:L2_End
     }
     prev_time = env.now
     while(True):
-        (cstate, delta, x,y,theta,Loc0_FT,Loc2_FT,Loc1_FT,Loc3_FT, prev_time) = switch_case[cstate](x,y,theta,Loc0_FT,Loc2_FT,Loc1_FT,Loc3_FT,
+        (cstate, delta, x,y,theta,phi,L1_FT,L2_End_FT, prev_time) = switch_case[cstate](x,y,theta,phi,L1_FT,L2_End_FT,
                                                             prev_time)
         # This should always be the final statement in this function
         global step
@@ -198,7 +116,7 @@ def main():
     # Run the simulation until all events in the queue are processed.
     # Make it some number to halt simulation after sometime.
     env.run(until=0.07)
-
+    print('total steps: ', step)
 
 if __name__ == '__main__':
     main()

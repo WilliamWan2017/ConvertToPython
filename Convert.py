@@ -166,7 +166,7 @@ def GetEquations(BlockLines,HA,ttol , iterations ):
                                   "&variableName":variableName,
                                   "&ttol":ttol,
                                   "&iterations":iterations[0],                                  
-                                  "&vtol":iterations[1]
+                                  "&vtol":str(iterations[1])
                                   } 
                     if not variableName in OrderContinuourVariables:
                         OrderContinuourVariables.append(variableName)

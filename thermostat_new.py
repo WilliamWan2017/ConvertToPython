@@ -15,21 +15,21 @@ def NoName(env, cstate=0):
 
     #define location equations
     LOC2_ode_x=ODE(env,lvalue= S.sympify('diff(x(t))'),
-                                                  rvalue=S.sympify(-0.25*x + 125),ttol=10**-3,iterations=100,vtol=0)
+                                                  rvalue=S.sympify(-0.25*S.sympify('x(t)') + 125),ttol=10**-3,iterations=100,vtol=0)
     Loc1_ode_x=ODE(env,lvalue= S.sympify('diff(x(t))'),
-                                                  rvalue=S.sympify('(-0.25)')*S.sympify('x(t)'),ttol=10**-3,iterations=100,vtol=0)
+                                                  rvalue=S.sympify((-0.25)*S.sympify('x(t)')),ttol=10**-3,iterations=100,vtol=0)
   
 
     #define location init value
-    LOC2_FT=False
     Loc1_FT=False
+    LOC2_FT=False
 
     #define location function
     
     
     # The computations in Loc1
     # Returning state, delta, value, loc1_FT, loc2_FT
-    def Loc1(x,LOC2_FT,Loc1_FT,prev_time):
+    def Loc1(x,Loc1_FT,LOC2_FT,prev_time):
         curr_time=env.now
         vals={S.sympify('x(t)'): x}
         # the edge guard take preference
@@ -38,7 +38,7 @@ def NoName(env, cstate=0):
             print('%s %7.4f:%7.4f' % ( 'Loc1-1',curr_time,x))  
             LOC2_FT=True   
             Loc1_FT=None                                       
-            return 1, 0, x, LOC2_FT,Loc1_FT, curr_time
+            return 1, 0, x, Loc1_FT,LOC2_FT, curr_time
         elif x>=18.5:
             if not Loc1_FT:
                 x = Loc1_ode_x.compute(vals, curr_time-prev_time)
@@ -55,7 +55,7 @@ def NoName(env, cstate=0):
                 x=  18.5
                 dx= 0
             Return_Delta=min(99999,dx)
-            return 0, Return_Delta, x, LOC2_FT,Loc1_FT, curr_time
+            return 0, Return_Delta, x, Loc1_FT,LOC2_FT, curr_time
         else:
             raise RuntimeError('Reached unreachable branch'
                                ' in Loc1')
@@ -63,7 +63,7 @@ def NoName(env, cstate=0):
     
     # The computations in LOC2
     # Returning state, delta, value, loc1_FT, loc2_FT
-    def LOC2(x,LOC2_FT,Loc1_FT,prev_time):
+    def LOC2(x,Loc1_FT,LOC2_FT,prev_time):
         curr_time=env.now
         vals={S.sympify('x(t)'): x}
         # the edge guard take preference
@@ -72,7 +72,7 @@ def NoName(env, cstate=0):
             print('%s %7.4f:%7.4f' % ( 'LOC2-1',curr_time,x))  
             Loc1_FT=True   
             LOC2_FT=None                                       
-            return 0, 0, x, LOC2_FT,Loc1_FT, curr_time
+            return 0, 0, x, Loc1_FT,LOC2_FT, curr_time
         elif x<=19.5:
             if not LOC2_FT:
                 x = LOC2_ode_x.compute(vals, curr_time-prev_time)
@@ -89,7 +89,7 @@ def NoName(env, cstate=0):
                 x=  19.5
                 dx= 0
             Return_Delta=min(99999,dx)
-            return 1, Return_Delta, x, LOC2_FT,Loc1_FT, curr_time
+            return 1, Return_Delta, x, Loc1_FT,LOC2_FT, curr_time
         else:
             raise RuntimeError('Reached unreachable branch'
                                ' in LOC2')
@@ -101,7 +101,7 @@ def NoName(env, cstate=0):
     }
     prev_time = env.now
     while(True):
-        (cstate, delta, x,LOC2_FT,Loc1_FT, prev_time) = switch_case[cstate](x,LOC2_FT,Loc1_FT,
+        (cstate, delta, x,Loc1_FT,LOC2_FT, prev_time) = switch_case[cstate](x,Loc1_FT,LOC2_FT,
                                                             prev_time)
         # This should always be the final statement in this function
         global step

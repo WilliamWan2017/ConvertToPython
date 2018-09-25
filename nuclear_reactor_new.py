@@ -24,27 +24,27 @@ def NoName(env, cstate=0):
 
     #define location equations
     Loc0_ode_x=ODE(env,lvalue= S.sympify('diff(x(t))'),
-                                                  rvalue=S.sympify(1.00000000000000),ttol=10**-3,iterations=100,vtol=10**-10)
+                                                  rvalue=S.sympify('1.00000000000000'),ttol=10**-3,iterations=100,vtol=10**-10)
     Loc0_ode_y=ODE(env,lvalue= S.sympify('diff(y(t))'),
-                                                  rvalue=S.sympify(1.00000000000000),ttol=10**-3,iterations=100,vtol=10**-10)
+                                                  rvalue=S.sympify('1.00000000000000'),ttol=10**-3,iterations=100,vtol=10**-10)
     Loc0_ode_theta=ODE(env,lvalue= S.sympify('diff(theta(t))'),
                                                   rvalue=S.sympify(vr),ttol=10**-3,iterations=100,vtol=10**-10)
     Loc1_ode_x=ODE(env,lvalue= S.sympify('diff(x(t))'),
-                                                  rvalue=S.sympify(1.00000000000000),ttol=10**-3,iterations=100,vtol=10**-10)
+                                                  rvalue=S.sympify('1.00000000000000'),ttol=10**-3,iterations=100,vtol=10**-10)
     Loc1_ode_y=ODE(env,lvalue= S.sympify('diff(y(t))'),
-                                                  rvalue=S.sympify(1.00000000000000),ttol=10**-3,iterations=100,vtol=10**-10)
+                                                  rvalue=S.sympify('1.00000000000000'),ttol=10**-3,iterations=100,vtol=10**-10)
     Loc1_ode_theta=ODE(env,lvalue= S.sympify('diff(theta(t))'),
                                                   rvalue=S.sympify(v1),ttol=10**-3,iterations=100,vtol=10**-10)
     Loc2_ode_x=ODE(env,lvalue= S.sympify('diff(x(t))'),
-                                                  rvalue=S.sympify(1.00000000000000),ttol=10**-3,iterations=100,vtol=10**-10)
+                                                  rvalue=S.sympify('1.00000000000000'),ttol=10**-3,iterations=100,vtol=10**-10)
     Loc2_ode_y=ODE(env,lvalue= S.sympify('diff(y(t))'),
-                                                  rvalue=S.sympify(1.00000000000000),ttol=10**-3,iterations=100,vtol=10**-10)
+                                                  rvalue=S.sympify('1.00000000000000'),ttol=10**-3,iterations=100,vtol=10**-10)
     Loc2_ode_theta=ODE(env,lvalue= S.sympify('diff(theta(t))'),
                                                   rvalue=S.sympify(v2),ttol=10**-3,iterations=100,vtol=10**-10)
   
 
     #define location init value
-    Loc0_FT=True
+    Loc0_FT=False
     Loc1_FT=False
     Loc2_FT=False
     Loc3_FT=False
@@ -58,24 +58,24 @@ def NoName(env, cstate=0):
         curr_time=env.now
         vals={S.sympify('x(t)'): x,S.sympify('y(t)'): y,S.sympify('theta(t)'): theta}
         # the edge guard take preference
-        if theta == thM and x>=T1:
+        if theta == thM and y>=T2:
             
-            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc0',curr_time,x,y,theta))  
-            Loc1_FT=True   
-            Loc0_FT=None                                       
-            return 1, 0, x,y,theta, Loc0_FT,Loc1_FT,Loc2_FT,Loc3_FT, curr_time
-        elif theta == thM and x<T1 and y<T2:
-            
-            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc0',curr_time,x,y,theta))  
-            Loc3_FT=True   
-            Loc0_FT=None                                       
-            return 3, 0, x,y,theta, Loc0_FT,Loc1_FT,Loc2_FT,Loc3_FT, curr_time
-        elif theta == thM and y>=T2:
-            
-            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc0',curr_time,x,y,theta))  
+            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc0-1',curr_time,x,y,theta))  
             Loc2_FT=True   
             Loc0_FT=None                                       
             return 2, 0, x,y,theta, Loc0_FT,Loc1_FT,Loc2_FT,Loc3_FT, curr_time
+        elif theta == thM and x<T1 and y<T2:
+            
+            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc0-1',curr_time,x,y,theta))  
+            Loc3_FT=True   
+            Loc0_FT=None                                       
+            return 3, 0, x,y,theta, Loc0_FT,Loc1_FT,Loc2_FT,Loc3_FT, curr_time
+        elif theta == thM and x>=T1:
+            
+            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc0-1',curr_time,x,y,theta))  
+            Loc1_FT=True   
+            Loc0_FT=None                                       
+            return 1, 0, x,y,theta, Loc0_FT,Loc1_FT,Loc2_FT,Loc3_FT, curr_time
         elif theta <= thM:
             if not Loc0_FT:
                 x = Loc0_ode_x.compute(vals, curr_time-prev_time)
@@ -84,7 +84,7 @@ def NoName(env, cstate=0):
                 Loc0_FT = True
             #else:
             Loc0_FT = False
-            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc0',curr_time,x,y,theta))
+            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc0-2',curr_time,x,y,theta))
             #set a Maximum value for delta 
             dtheta=9999999 
             if abs(theta- thM) > Loc0_ode_theta.vtol:
@@ -108,7 +108,7 @@ def NoName(env, cstate=0):
         # the edge guard take preference
         if theta==thm:
             x=0
-            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc1',curr_time,x,y,theta))  
+            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc1-1',curr_time,x,y,theta))  
             Loc0_FT=True   
             Loc1_FT=None                                       
             return 0, 0, x,y,theta, Loc0_FT,Loc1_FT,Loc2_FT,Loc3_FT, curr_time
@@ -120,7 +120,7 @@ def NoName(env, cstate=0):
                 Loc1_FT = True
             #else:
             Loc1_FT = False
-            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc1',curr_time,x,y,theta))
+            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc1-2',curr_time,x,y,theta))
             #set a Maximum value for delta 
             dtheta=9999999 
             if abs(theta- thm) > Loc1_ode_theta.vtol:
@@ -144,7 +144,7 @@ def NoName(env, cstate=0):
         # the edge guard take preference
         if theta == thm:
             y=0
-            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc2',curr_time,x,y,theta))  
+            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc2-1',curr_time,x,y,theta))  
             Loc0_FT=True   
             Loc2_FT=None                                       
             return 0, 0, x,y,theta, Loc0_FT,Loc1_FT,Loc2_FT,Loc3_FT, curr_time
@@ -156,7 +156,7 @@ def NoName(env, cstate=0):
                 Loc2_FT = True
             #else:
             Loc2_FT = False
-            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc2',curr_time,x,y,theta))
+            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc2-2',curr_time,x,y,theta))
             #set a Maximum value for delta 
             dtheta=9999999 
             if abs(theta- thm) > Loc2_ode_theta.vtol:

@@ -4,8 +4,7 @@ pip install simpy
 pip install sympy
 
 run method 
-step1: generate a new python code
-  python convert.py "robot.json" "robot0919.py" "HA1"
+step1: generate a new python code 
 
   python convert.py "robot_sample.json" "robot0919.py" "HA1"
 
@@ -17,7 +16,7 @@ step1: generate a new python code
  
  python convert.py "waterMonitorAlurLHA.json" "waterMonitorAlurLHA_new.py" "HA1" "" 10**-3 100 "CodeTemplete.txt" 30 0
 
- python convert.py "atrialfib.json" "atrialfib_new.py" "HA1" "" 10**-3 100 "CodeTemplete.txt" 30 0
+ python convert.py "atrialfib.json" "atrialfib_new.py" "HA1" "" 10**-3 100 "CodeTemplete_poly.txt" 30 0
 
 
 step2: run the python code file

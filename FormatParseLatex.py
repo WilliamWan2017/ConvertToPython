@@ -27,6 +27,7 @@ def formatParseLatex4Code(strLatex,Variables):
     return leftEquation,rightEquation,variableName
     
 def format4Design(strLatex):
+  
     strResult=formatSinglePart(strLatex)
     strResult=formatVariableName(strResult)
     strResult=formatDot(strResult)
@@ -49,8 +50,12 @@ def formatSinglePart(strLatex):
     return strEquation
 
 def formatDot(strEquation):
-    p=standardre.compile("(dot\*)([a-zA-Z0-9]*)([^a-zA-Z0-9]*)")
-    return p.sub(r"diff(\2)",strEquation)
+    p=standardre.compile("(dot\*)([a-zA-Z0-9][a-zA-Z0-9]*)([^a-zA-Z0-9]|$)")
+    if standardre.search(p, strEquation ):
+        return p.sub(r"diff(\2)\3",strEquation)
+    p=standardre.compile("([a-dA-Z][a-zA-Z0-9]*)(\*dot)")
+    return p.sub(r"diff(\1)",strEquation)
+
 
 def formatVariableName(strEquation):
      p=standardre.compile(r'([a-zA-Z0-9])(_\{)([a-zA-Z0-9])(\})')
@@ -60,7 +65,11 @@ def formatContinuourVariable(strEquation,Variables):
     #p=standardre.compile(r'(\()(x|y|t|pt)(\))')
     #strParttern=
     p=standardre.compile(r'(^|[^a-zA-Z0-9])('+'|'.join(Variables)+r')($|[^a-zA-Z0-9])')
-    return p.sub(r'\1\2(t)\3',strEquation)
+    #return p.sub(r'\1\2(t)\3',strEquation)
+    if "diff" in strEquation:        
+        return p.sub(r"\1\2(t)\3",strEquation)
+    else:            
+        return p.sub(r"\1S.sympify('\2(t)')\3",strEquation)
 def formatContinuourVariable_old(strEquation,Variables):
     #p=standardre.compile(r'(\()(x|y|t|pt)(\))')
     #strParttern=
@@ -75,6 +84,16 @@ def getContinuousVariable(strEquation,Variables):
     else:        
         return ''; 
     
+def formatSympifySubEquation(strEquation):
+    sympyEquation=['exp','sum','prod','log','ln','sin','cos','tan','csc','sec',
+                   'cot','arcsin','arccos','arctan','arccsc','arcsec','arccot',
+                   'sinh','cosh','tanh','arcsinh','arccosh','arctanh','sqrt',
+                   'times','cdot','div','frac','mathit'
+                   ]
+      
+
+    p=standardre.compile(r'(^|[^a-zA-Z0-9])('+'|'.join(sympyEquation)+r')($|[^a-zA-Z0-9])')   
+    return p.sub(r'\1S.\2\3',strEquation)
 def formatSympify(strEquation):
     
     
@@ -88,7 +107,7 @@ def formatSympify(strEquation):
     if (p.match(strEquation)):   
         return 'S.sympify(\''+strEquation+'\')'   
     else: 
-        return 'S.sympify('+strEquation+')'
+        return 'S.sympify('+formatSympifySubEquation(strEquation)+')'
 
 def formatSympify_old(strEquation):
     isMustAddSym=False

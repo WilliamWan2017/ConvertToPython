@@ -186,7 +186,7 @@ def GetEdges(BlockLines,HA,currentLocation,ContinuourVariables,locations):
     iEdge=0 
     for EdgeName in HA["lines"].keys():
         Edge= HA["lines"][EdgeName]       
-        if Edge["strFromLocation"]==currentLocation["boxName"] and not Edge["strToLocation"]==currentLocation["boxName"]:
+        if Edge["strFromLocation"]==currentLocation["boxName"] :#and not Edge["strToLocation"]==currentLocation["boxName"]:
             iEdge= iEdge+1
             for strLine in BlockLines:             
                 AnalysesLine=strLine.split('$')
