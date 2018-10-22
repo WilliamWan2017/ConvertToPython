@@ -58,13 +58,7 @@ def NoName(env, cstate=0):
         curr_time=env.now
         vals={S.sympify('x(t)'): x,S.sympify('y(t)'): y,S.sympify('theta(t)'): theta}
         # the edge guard take preference
-        if theta == thM and y>=T2:
-            
-            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc0-1',curr_time,x,y,theta))  
-            Loc2_FT=True   
-            Loc0_FT=None                                       
-            return 2, 0, x,y,theta, Loc0_FT,Loc1_FT,Loc2_FT,Loc3_FT, curr_time
-        elif theta == thM and x<T1 and y<T2:
+        if theta == thM and x<T1 and y<T2:
             
             print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc0-1',curr_time,x,y,theta))  
             Loc3_FT=True   
@@ -76,6 +70,12 @@ def NoName(env, cstate=0):
             Loc1_FT=True   
             Loc0_FT=None                                       
             return 1, 0, x,y,theta, Loc0_FT,Loc1_FT,Loc2_FT,Loc3_FT, curr_time
+        elif theta == thM and y>=T2:
+            
+            print('%s %7.4f:%7.4f:%7.4f:%7.4f' % ( 'Loc0-1',curr_time,x,y,theta))  
+            Loc2_FT=True   
+            Loc0_FT=None                                       
+            return 2, 0, x,y,theta, Loc0_FT,Loc1_FT,Loc2_FT,Loc3_FT, curr_time
         elif theta <= thM:
             if not Loc0_FT:
                 x = Loc0_ode_x.compute(vals, curr_time-prev_time)

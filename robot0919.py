@@ -60,7 +60,7 @@ def NoName(env, cstate=0):
             L1_FT = False
             print('%s %7.4f:%7.4f:%7.4f:%7.4f:%7.4f' % ( 'L1-2',curr_time,x,y,theta,phi))
             #set a Maximum value for delta 
-            dx,dy=9999999,9999999 
+            dy,dx=9999999,9999999 
             if abs(x- 2.8) > L1_ode_x.vtol:
                 dx= min( L1_ode_x.delta(vals, quanta=( 2.8- x),
                                       other_odes=[L1_ode_y,L1_ode_theta,L1_ode_phi]),dx )
@@ -79,7 +79,7 @@ def NoName(env, cstate=0):
             else:
                 y=  1.8
                 dy= 0
-            Return_Delta=min(99999,dx,dy)
+            Return_Delta=min(99999,dy,dx)
             return 0, Return_Delta, x,y,theta,phi, L1_FT,L2_End_FT, curr_time
         else:
             raise RuntimeError('Reached unreachable branch'

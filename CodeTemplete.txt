@@ -55,13 +55,13 @@ def $&haname$(env, cstate=0):
             $&initCheckPoints$ 
             $&Block Begin CheckPoints$
             if abs($&VariableName$- $&CheckPointValue$) > $&locationname$_ode_$&VariableName$.vtol:
-                $&Delat_Variable$= min( $&locationname$_ode_$&VariableName$.delta(vals, quanta=( $&CheckPointValue$- $&VariableName$),
+                $&Delta_Variable$= min( $&locationname$_ode_$&VariableName$.delta(vals, quanta=( $&CheckPointValue$- $&VariableName$),
                                       other_odes=[$&Other_odes$]),d$&VariableName$ )
             else:
                 $&VariableName$=  $&CheckPointValue$
-                $&Delat_Variable$= 0
+                $&Delta_Variable$= 0
             $&Block End CheckPoints$
-            Return_Delta=min(99999,$&Delat_VariableList$)
+            Return_Delta=min(99999,$&Delta_VariableList$)
             return $&CurrentlocationIndex$, Return_Delta, $&Var_ContsList$, $&locationInitList$, curr_time
         else:
             raise RuntimeError('Reached unreachable branch'

@@ -13,60 +13,71 @@ import Convert
 from latex2sympy.process_latex import process_sympy
 import FormatParseLatex
 import sys 
-def GetLcationName(location,ContinuourVariables,locations,Edge,Ext=[]):
+
+#get name of current location ;
+def GetLocationName(location,ContinuourVariables,locations,Edge,Ext=[]):
     return location["boxName"]
 
+# a list of all of inconstant variables in current HA
 def GetVar_ContsList(location,ContinuourVariables,locations,Edge,Ext=[]):
     return ','.join(ContinuourVariables)
 
+#a state variable list of all of locations in current HA
 def GetLocationInitList(location,ContinuourVariables,locations,Edge,Ext=[]):
     LocationNames=[location1["boxName"] for location1 in locations.values() if location1["boxName"] ]
     return '_FT,'.join(LocationNames)+"_FT"
 
+#a list of Simpy’s format of continuous variables;
 def Getconvert_continuous_variable_to_simpy(location,ContinuourVariables,locations,Edge,Ext=[]):
     listResult=[]
     for variableName in ContinuourVariables:
         listResult.append('S.sympify(\''+variableName+'(t)\'): '+variableName+'')
         
     return ','.join(listResult)
-
+#return an Edge’s guard
 def GetEdge_Guard(location,ContinuourVariables,locations,Edge,Ext=[]):
     if Ext[0]==1:
         strReturn='if ' +Edge["guard"]+":"
     else:
         strReturn='elif ' +Edge["guard"]+":"        
     return strReturn
-
+#return an Edge’s reset
 def GetReset(location,ContinuourVariables,locations,Edge,Ext=[]):
     strReturn= Edge["reset"] 
     return strReturn
-
+#the index of toLocation of an Edge;
 def GetLocationDestIndex(location,ContinuourVariables,locations,Edge,Ext=[]):
     for ik in locations.keys():
         if locations[ik]["boxName"]==Edge["strToLocation"]:
             return str(ik)
     return '0'
 
+#the index of fromLocation of an Edge;
 def GetCurrentlocationIndex(location,ContinuourVariables,locations,Edge,Ext=[]):
     for ik in locations.keys():
         if locations[ik]["boxName"]==location["boxName"]:
             return str(ik)
     return '0' 
+
+#the name of toLocation of an Edge;
 def GetLocationDestName(location,ContinuourVariables,locations,Edge,Ext=[]):
     return Edge["strToLocation"]
 
-
+# name of a variable in an equation of a location
 def GetVar_Cont(location,ContinuourVariables,locations,Var_Cont,Ext=[]):
     return str(Var_Cont);
+#the output format of all of  inconstant variables in current HA
 def GetVar_Cont_Format(location,ContinuourVariables,locations,Var_Cont,Ext=[]):
     
     listFormat=[]
     for v in ContinuourVariables:
         listFormat.append( '%7.4f')
     return ':'.join(listFormat);
+#the invariant of current location
 def GetInvariant(location,ContinuourVariables,locations,Var_Cont,Ext=[]): 
     return location["invariant"]
 
+#the following code is to calculate continuous variables in location function if the location’s invariant is satisfied;
 def GetVar_contiCompute(BlockLines,HA,currentLocation,ContinuourVariables,locations):
     strResult=''
     for Var_Cont in ContinuourVariables :
@@ -84,7 +95,7 @@ def GetVar_contiCompute(BlockLines,HA,currentLocation,ContinuourVariables,locati
                 else:
                     strResult+=AnalysesLine[i]
     return strResult
-
+#Initialling all of delta of check variables of current location, one variable will be converted to a row python code;
 def GetinitCheckPoints(currentLocation,ContinuourVariables,locations,checkPoint,Ext=[]): 
     strResult=''  
     listVariables=[]
@@ -97,6 +108,7 @@ def GetinitCheckPoints(currentLocation,ContinuourVariables,locations,checkPoint,
         strResult=','.join(listVariables)+'='+','.join(listInistValus)
     return strResult
 
+#a list of delta variables calculating in current location.
 def GetDelat_VariableList(currentLocation,ContinuourVariables,locations,checkPoint,Ext=[]): 
     strResult=''    
     CheckPointVariables=deleteDuplicatedElementFromList(['d'+currentLocation['checkPoints'][checkPointSeq]["VariableName"] for checkPointSeq in currentLocation['checkPoints'].keys() ])
@@ -105,12 +117,20 @@ def GetDelat_VariableList(currentLocation,ContinuourVariables,locations,checkPoi
     else:
         strResult='0'
     return strResult
+
+#the checked value of a checkpoint.
 def GetCheckPointValue(currentLocation,ContinuourVariables,locations,checkPoint,Ext=[]):
     return checkPoint["Value"]
+
+#name of a variable in an equation of a location
 def GetVariableName(currentLocation,ContinuourVariables,locations,checkPoint,Ext=[]):
     return checkPoint["VariableName"]
+
+# the delta of a variable in a selected checkpoint.
 def GetDelat_Variable(currentLocation,ContinuourVariables,locations,checkPoint,Ext=[]):
     return 'd'+checkPoint["VariableName"]
+
+#a list of variables’ ode except for current variable.
 def GetOther_odes (currentLocation,ContinuourVariables,locations,checkPoint,Ext=[]):
     strResult=''
     listOthers=[]
@@ -120,7 +140,7 @@ def GetOther_odes (currentLocation,ContinuourVariables,locations,checkPoint,Ext=
     strResult=','.join(listOthers)    
     return strResult
 switcherInFunction = {
-        "&locationname": GetLcationName,
+        "&locationname": GetLocationName,
         "&Var_ContsList":GetVar_ContsList,
         "&Var_Cont":GetVar_Cont,
         "&locationInitList":GetLocationInitList,
@@ -134,15 +154,14 @@ switcherInFunction = {
         "&VariableName":GetVariableName,
         "&CheckPointValue":GetCheckPointValue,
         "&Other_odes":GetOther_odes,
-        "&Delat_VariableList":GetDelat_VariableList,
-        "&Delat_Variable":GetDelat_Variable,
+        "&Delta_VariableList":GetDelat_VariableList,
+        "&Delta_Variable":GetDelat_Variable,
         "&initCheckPoints":GetinitCheckPoints,
         "&CurrentlocationIndex":GetCurrentlocationIndex
     } 
 
    
-            
-            
+ #each location is converted to a function            
 def GetLocationFunction(BlockLines,HA,Locations,ContinuourVariables):
     strResult=''  
     for iL in range(len(Locations.keys())-1): 
@@ -181,6 +200,7 @@ def GetLocationFunction(BlockLines,HA,Locations,ContinuourVariables):
                     subBlockLines.append(strLine)
     return strResult
 
+#each edge whose fromlocaton is current location will be converted to a code block
 def GetEdges(BlockLines,HA,currentLocation,ContinuourVariables,locations):
     strResult=''
     iEdge=0 
@@ -204,7 +224,7 @@ def GetEdges(BlockLines,HA,currentLocation,ContinuourVariables,locations):
     return strResult
      
  
-         
+#choose relatived block convert function         
 def formatSubBlock(CurrentBlockName, BlockLines,currentHA,currentLocation,ContinuourVariables,locations):
     if (CurrentBlockName== "Edge"):
         return GetEdges(BlockLines,currentHA,currentLocation,ContinuourVariables,locations)
@@ -214,7 +234,7 @@ def formatSubBlock(CurrentBlockName, BlockLines,currentHA,currentLocation,Contin
         return GetCheckPoints(BlockLines,currentHA,currentLocation,ContinuourVariables,locations)
       
     return ''  
-
+#the following code is for a checkpoint until “$&Block End CheckPoints$”, each checkpoint in current location will be converted to a code block;
 def GetCheckPoints(BlockLines,HA,currentLocation,ContinuourVariables,locations):
     strResult=''
     for checkPointSeq in sorted(currentLocation["checkPoints"].keys()):

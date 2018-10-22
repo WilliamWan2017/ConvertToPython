@@ -9,6 +9,7 @@ import ConvertFunction
 import sys
 ContinuourVariables=[]
 OrderContinuourVariables=[]
+#get the current location name
 def GetLocations(currentHA):
     Locations={}
     iLocation=1
@@ -27,7 +28,7 @@ def GetLocations(currentHA):
     if isHaveEndLocation==False:
         Locations[iLocationCount]={"boxName":"","isInitial":False}
     return Locations
-    
+    # the main function of convert python code
 def convertF(JsonFile='robot.json',OutputFile='GerenateResult.py',HAName='HA1',ModelName='',ttol=10**-2, iterations=1000,TempleteFile='CodeTemplete.txt',until=0.07,vtol=0 ):
     with open (JsonFile, 'r') as fh:        
         currentProject=json.load(fh) 
@@ -73,10 +74,12 @@ def convertF(JsonFile='robot.json',OutputFile='GerenateResult.py',HAName='HA1',M
     print(TempleteFile)
      
     pass
+
+# return the current HA's name
 def GetHAName(AnalysesLine,HA,Locations,Ext=[]):
     return HA["name"].replace(' ','_')
 
-
+#Initialling all of constant variables in current HA, one constant variable will be converted to a row python code;
 def GetConstants(AnalysesLine,HA,Locations,Ext=[]):
     strResult='' 
     for VariableName in sorted( HA["variables"].keys()):
@@ -90,6 +93,7 @@ def GetConstants(AnalysesLine,HA,Locations,Ext=[]):
     return strResult
 
 
+#Initialling all of inconstant variables in current HA, one constant variable will be converted to a row python code;
 def GetVar_Conts(AnalysesLine,HA,Locations,Ext=[]):
     strResult=''     
     for VariableName in sorted( HA["variables"].keys()):
@@ -101,6 +105,8 @@ def GetVar_Conts(AnalysesLine,HA,Locations,Ext=[]):
                 else:
                     strResult+=AnalysesLine[i]
     return strResult
+
+#Initialling all of state of locations in current HA, one location will be converted to a row python code;
 def GetLocation_Init(AnalysesLine,HA,Locations,Ext=[]):
     strResult=''     
     for iLocation in Locations.keys():
@@ -111,6 +117,8 @@ def GetLocation_Init(AnalysesLine,HA,Locations,Ext=[]):
                 else:
                     strResult+=AnalysesLine[i]
     return strResult
+
+#return a dict of all of locations in current HA , including index and name, the initial location’s index is 1, and the end location has the biggest index if it has an end location.
 def GetDicLocationName(AnalysesLine,HA,Locations,Ext=[]):
     strResult='' 
     listResult=[]
@@ -126,6 +134,8 @@ def GetDicLocationName(AnalysesLine,HA,Locations,Ext=[]):
             listResult.append(strResult)
         strResult=''
     return ''.join(listResult)
+
+#22)a value of the HA will quit calculation process.
 def GetUntil(AnalysesLine,HA,Locations,Ext=[]):
     return str(Ext[0])
 
@@ -148,7 +158,7 @@ def GetEndlocationFuction(BlockLines,currentHA,ttol , iterations,Locations ):
              
     
     return strResult
-
+#generate codes from equations ;
 def GetEquations(BlockLines,HA,ttol , iterations ):
     strResult='' 
     intBlockLines=len(BlockLines)
@@ -186,7 +196,7 @@ def GetEquations(BlockLines,HA,ttol , iterations ):
                 pass           
     
     return strResult
-
+#template variable maps to function
 switcher = {
         "&haname": GetHAName,
         "&constants":GetConstants,
@@ -197,6 +207,7 @@ switcher = {
         '&locationEndName':GetlocationEndName,
         '&until':GetUntil
     } 
+#template variables who should be converted by row mode.
 LineProducing=['&constants','&Var_Conts','&location_Init','&DicLocationName']
         
         
@@ -223,6 +234,8 @@ def formatCode(AnalysesLine,currentHA,Locations,Ext=[]):
         else:
             strResult+=AnalysesLine[i]
     return strResult
+
+#should converted by block mode
 def formatBlock(CurrentBlockName, BlockLines,currentHA,ttol , iterations , Locations):
     if (CurrentBlockName== "equations"):
         return GetEquations(BlockLines,currentHA,ttol , iterations )
